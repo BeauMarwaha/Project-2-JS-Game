@@ -1,0 +1,58 @@
+body{ 
+	margin: 0; 
+	width: 100vw;
+	height: 100vh;
+	background-color: #333333;
+}
+
+#mainMenu{
+	background-color: gray;
+    text-align: center;
+    z-index: 1;
+	width: 600px;
+    height: 400px;
+    margin: auto;
+    display: block;
+    position: absolute;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.titleText{
+	font: bold 20px Verdana;
+}
+
+.titleTextBig{
+	font: bold 30px Verdana;
+}
+
+#title{
+	margin-top: 75px;
+}
+
+.button {
+	  text-decoration: none;
+	  background-color: #EEEEEE;
+	  color: #333333;
+	  padding: 2px 6px 2px 6px;
+	  border-top: 1px solid #CCCCCC;
+	  border-right: 1px solid #333333;
+	  border-bottom: 1px solid #333333;
+	  border-left: 1px solid #CCCCCC;
+}
+
+canvas {
+    width: 600px;
+    height: 400px;
+    margin: auto;
+    display: block;
+    position: absolute;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
