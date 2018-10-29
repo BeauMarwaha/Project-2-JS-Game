@@ -1,5 +1,15 @@
 RM1 Project 2 TO DOs:
+-level win screen
+-game over screen
+-dot movement (user control)
+-win condition
+-level transitions
+-move counter tracking
+
+Completed:
 -repo - Beau
--title - Beau
+-title screen - Beau
 -grid 8x8 - Beau
--basic level - Beau
+-basic level creation - Beau
+-external text file reading - Beau
+-level loading - Beau

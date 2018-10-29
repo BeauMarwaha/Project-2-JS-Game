@@ -9,8 +9,8 @@ body{
 	background-color: gray;
     text-align: center;
     z-index: 1;
-	width: 600px;
-    height: 400px;
+	width: 800px;
+    height: 600px;
     margin: auto;
     display: block;
     position: absolute;
@@ -45,8 +45,8 @@ body{
 }
 
 canvas {
-    width: 600px;
-    height: 400px;
+    width: 800px;
+    height: 600px;
     margin: auto;
     display: block;
     position: absolute;
