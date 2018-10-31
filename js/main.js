@@ -175,6 +175,7 @@ function readTextFile(file, callback) {
 
  function keyPressed(event) {
 	let move = 0;
+	if(paused) return;
 	if(event.keyCode == 37) {
 		dots.sort((a,b) => a.x - b.x);
         for(let dot of dots){
