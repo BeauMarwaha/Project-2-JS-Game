@@ -1,4 +1,5 @@
 import {} from './utilities.js';
+import {rowWidth,colWidth,topSpacing,leftSpacing} from './main.js';
 export {createCircleSprite,createSquareSprite,createImageSprite};
 
 class sprite{
@@ -18,11 +19,15 @@ class circleSprite extends sprite{
 	draw(ctx){
 		ctx.save();
 		ctx.beginPath();
-		ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
+		ctx.arc((this.x * colWidth) + leftSpacing + (colWidth / 2), (this.y * rowWidth) + topSpacing + (rowWidth / 2), this.radius, 0, Math.PI*2, false);
 		ctx.closePath();
 		ctx.fillStyle = this.color;
 		ctx.fill();
 		ctx.restore();
+	}
+	move(x,y){
+		this.x += x;
+		this.y += y;
 	}
 }
 

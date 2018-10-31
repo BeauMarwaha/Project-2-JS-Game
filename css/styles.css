@@ -20,7 +20,36 @@ body{
     left: 0;
     right: 0;
 }
-
+#winScreen{
+	background-color: gray;
+    text-align: center;
+    z-index: 1;
+	width: 800px;
+    height: 600px;
+    margin: auto;
+    position: absolute;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	display: none;
+}
+#lossScreen{
+	background-color: gray;
+    text-align: center;
+    z-index: 1;
+	width: 800px;
+    height: 600px;
+    margin: auto;
+    position: absolute;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	display: none;
+}
 .titleText{
 	font: bold 20px Verdana;
 }
