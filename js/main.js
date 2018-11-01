@@ -38,14 +38,12 @@ function startGame(){
 }
 function restartGame(){
 	document.querySelector('#lossScreen').style.display = "none";
-	
+	document.querySelector('#winScreen').style.display = "none";
 	gameBoard = createArray(rows, cols);
 	dots = [];
 	endPoints = [];
 	readTextFile("levels/level-"+level+".txt", levelLoaded);
 	
-	turns = 8;
-
 	//debugger;
     
 }
@@ -56,7 +54,7 @@ function levelLoaded(levelGuide)
     
     // Populate the game board using the text file's contents
     initializeLevel(levelGuide)
-
+	
     // Start updating the game board
 	paused = false;
 	update();
@@ -140,6 +138,12 @@ function initializeLevel(levelGuide)
             location++;
         }
     }
+	let turnNum = "";
+	while(levelGuide.charAt(location)!= ""){
+		turnNum += "" + levelGuide.charAt(location) + "";
+		location++;
+	}
+	turns = parseInt(turnNum,10);
 }
 // Array initialization code SOURCED from https://stackoverflow.com/a/966938
 function createArray(length) {
@@ -226,12 +230,13 @@ function readTextFile(file, callback) {
 		turns--;
 		move = 0;		
 	}
-	if(turns <= 0){
+	checkWin();
+	if(turns <= 0 && !paused){
 		paused = true;
 		displayLoss();
 		
 	}
-	checkWin();
+	
 }
 function checkWin(){
 	let length = 0;
@@ -249,6 +254,9 @@ function checkWin(){
 	}
 }
 function displayWin(){
+	level = 2;
+	
+	document.querySelector("#nextButton").onclick = restartGame;
 	document.querySelector('#winScreen').style.display = "block";
 	
 }
