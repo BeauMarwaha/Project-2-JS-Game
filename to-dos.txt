@@ -1,4 +1,15 @@
 RM1 Project 2 TO DOs:
+-8 more levels - James
+-Reverse Piece - James
+-Teleporter Spot - James
+-Documentation - James
+-Teleporter Image (Sprite Sheet)
+-Add instructions to game screen - Beau
+-Add our names - Beau
+-Menu redesign "Shift" - Beau
+-Music/Sound Effects - Beau
+-Custom Font - Beau
+-Documentation - Beau
 
 
 Completed:
