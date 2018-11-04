@@ -1,4 +1,4 @@
-import {createCircleSprite,createSquareSprite,createImageSprite} from './classes.js';
+import {createCircleSprite,createSquareSprite,createImageSprite,createSound} from './classes.js';
 export {init,rowWidth,colWidth,topSpacing,leftSpacing};
 
 const canvas = document.querySelector("canvas");
@@ -7,9 +7,9 @@ const screenWidth = canvas.width;
 const screenHeight = canvas.height;
 let gameBoard;
 const rows = 8;
-const rowWidth = 50;
+const rowWidth = 75;
 const cols = 8;
-const colWidth = 50;
+const colWidth = 75;
 let dots = [];
 let endPoints = [];
 
@@ -17,13 +17,24 @@ let turns = 8;
 let level = 1;
 let paused = true;
 // Calculate the top and left spacing to have the game board centered in the bottom middle of the canvas
-const topSpacing = screenHeight - (rows * rowWidth);
-const leftSpacing = screenWidth - ((cols * colWidth) * 1.5);
+const topSpacing = 0;
+const leftSpacing = 0;
+
+// Set up music & sound effects
+let backgroundMusic = createSound("sounds/electronic-base-and-pop-guitar.mp3", true); // Sound from: https://freesound.org/people/frankum/sounds/273300/
+let moveSound = createSound("sounds/boop.wav", false); // Sound from: https://freesound.org/people/fordps3/sounds/186669/
+let winSound = createSound("sounds/little-boops-loop.wav", false); // Sound from: https://freesound.org/people/newagesoup/sounds/348849/
+let loseSound = createSound("sounds/sad-trombone.wav", false); // Sound from: https://freesound.org/people/Timbre/sounds/73750/
 
 function init(){
+    // Set up the start button to start the game
     document.querySelector("#startButton").onclick = startGame;
-	
-	document.addEventListener('keyup', keyPressed, false);
+    
+    // Set up key tracking
+    document.addEventListener('keyup', keyPressed, false);
+    
+    // Start playing the background music
+    backgroundMusic.play();
 }
 
 function startGame(){
@@ -36,24 +47,29 @@ function startGame(){
     // Start loading the level from an external file and call the levelLoaded function when complete
     readTextFile("levels/level-1.txt", levelLoaded);
 }
+
 function restartGame(){
+    // Hide the win/lose screens
 	document.querySelector('#lossScreen').style.display = "none";
-	document.querySelector('#winScreen').style.display = "none";
+    document.querySelector('#winScreen').style.display = "none";
+    
+    // Load up the level
 	gameBoard = createArray(rows, cols);
 	dots = [];
 	endPoints = [];
 	readTextFile("levels/level-"+level+".txt", levelLoaded);
-	
-	//debugger;
-    
 }
+
 function levelLoaded(levelGuide)
 {
     // Remove all whitespace from the loaded text
     levelGuide = levelGuide.replace(/\s+/g, ''); 
     
     // Populate the game board using the text file's contents
-    initializeLevel(levelGuide)
+    initializeLevel(levelGuide);
+
+    // Display the Instructions
+    document.querySelector('#instructions').style.display = "block";
 	
     // Start updating the game board
 	paused = false;
@@ -68,18 +84,15 @@ function update(){
     // Clear the background
     ctx.save();
     ctx.fillStyle = "#FFFFFF";
-	ctx.fillRect(0,0,screenWidth,screenHeight)
+	ctx.fillRect(0,0,screenWidth,screenHeight);
     ctx.restore();
 
     // Draw a square around the game board
     ctx.save();
     ctx.strokeStyle = "#000000";
-	ctx.strokeRect(topSpacing, leftSpacing, rows * rowWidth, cols * colWidth)
+    ctx.strokeRect(topSpacing, leftSpacing, rows * rowWidth, cols * colWidth);
     ctx.restore();
-    
-	
-	
-	
+
     // Loop through the game board sections and draw them
     for (let i = 0; i < rows; i++)
     {
@@ -93,9 +106,7 @@ function update(){
         }
     }
 
-	
     // Loop through the dots and end points and draw them
-	
 	endPoints.forEach(function(endPoint) {
         endPoint.sprite.draw(ctx);
     });
@@ -103,8 +114,10 @@ function update(){
     dots.forEach(function(dot) {
         dot.sprite.draw(ctx);
     });
-	ctx.font = "30px Arial";
-    ctx.fillText("Turns left: " + turns,leftSpacing,topSpacing - 50);
+
+    // Write the turns left onto the screen
+	ctx.font = "bold 30px Roboto";
+    ctx.fillText("Turns left: " + turns, 615, 50, 185);
 }
 
 function initializeLevel(levelGuide)
@@ -145,6 +158,7 @@ function initializeLevel(levelGuide)
 	}
 	turns = parseInt(turnNum,10);
 }
+
 // Array initialization code SOURCED from https://stackoverflow.com/a/966938
 function createArray(length) {
     var arr = new Array(length || 0),
@@ -175,9 +189,9 @@ function readTextFile(file, callback) {
     }
     rawFile.open('GET', file, true)
     rawFile.send();
-  }
+}
 
- function keyPressed(event) {
+function keyPressed(event) {
 	let move = 0;
 	if(paused) return;
 	if(event.keyCode == 37) {
@@ -225,19 +239,28 @@ function readTextFile(file, callback) {
 			}
 		}	
     }
-	
+    
+    // If the player moved this turn
 	if(move > 0){
-		turns--;
+        // Play the move music
+        moveSound.play();
+
+        // Decrement the turn tracker
+        turns--;
+        
+        // Reset the move counter
 		move = 0;		
-	}
+    }
+    
+    // Check win/loss conditions
 	checkWin();
 	if(turns <= 0 && !paused){
 		paused = true;
 		displayLoss();
-		
 	}
 	
 }
+
 function checkWin(){
 	let length = 0;
 	for(let dot of dots){
@@ -253,15 +276,30 @@ function checkWin(){
 		paused = true;
 	}
 }
+
 function displayWin(){
-	level = 2;
-	
+    // Advance the level
+    level = 2;
+    
+    // Play the win music
+    winSound.play();
+    
+    // Hide the Instructions
+    document.querySelector('#instructions').style.display = "none";
+    
+    // Display the win screen
 	document.querySelector("#nextButton").onclick = restartGame;
 	document.querySelector('#winScreen').style.display = "block";
-	
 }
+
 function displayLoss(){
-	
+    // Play the lose music
+    loseSound.play();
+
+	// Hide the Instructions
+    document.querySelector('#instructions').style.display = "none";
+
+    // Display the loss screen
 	document.querySelector("#retryButton").onclick = restartGame;
 	document.querySelector('#lossScreen').style.display = "block";
 }

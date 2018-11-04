@@ -1,6 +1,6 @@
 import {} from './utilities.js';
 import {rowWidth,colWidth,topSpacing,leftSpacing} from './main.js';
-export {createCircleSprite,createSquareSprite,createImageSprite};
+export {createCircleSprite,createSquareSprite,createImageSprite,createSound};
 
 class sprite{
 		constructor(x,y){
@@ -72,4 +72,34 @@ function createImageSprite(x, y, width=30, height=30, url="images/Sean.png"){
 	let image = new Image();
 	image.src = url; 
 	return new imageSprite(x,y,width,height,image); 
+}
+
+class sound{
+	constructor(src, loop){
+		this.sound = document.createElement("audio");
+		this.sound.src = src;
+		this.sound.setAttribute("preload", "auto");
+		this.sound.setAttribute("controls", "none");
+		this.sound.style.display = "none";
+
+		if (loop)
+		{
+			this.sound.addEventListener('ended', function() {
+				this.currentTime = 0;
+				this.play();
+			}, false);
+		}
+		
+		document.body.appendChild(this.sound);
+	}
+	play(){
+        this.sound.play();
+    }
+    stop(){
+        this.sound.pause();
+    }
+}
+
+function createSound(src, loop) {
+	return new sound(src, loop); 
 }

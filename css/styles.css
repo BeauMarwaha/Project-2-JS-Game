@@ -6,7 +6,7 @@ body{
 }
 
 #mainMenu{
-	background-color: gray;
+	background-color: rgb(255, 255, 255);
     text-align: center;
     z-index: 1;
 	width: 800px;
@@ -20,8 +20,29 @@ body{
     left: 0;
     right: 0;
 }
+
+#instructions{
+    text-align: center;
+    z-index: 1;
+	width: 190px;
+    height: 600px;
+    margin: auto;
+    position: absolute;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+    left: 600px;
+    right: 0;
+	display: none;
+}
+
+#instructions .titleTextBig{
+	font: bold 32px Roboto;
+	margin-top: 125px;
+}
+
 #winScreen{
-	background-color: gray;
+	background-color: rgb(255, 255, 255);
     text-align: center;
     z-index: 1;
 	width: 800px;
@@ -35,8 +56,9 @@ body{
     right: 0;
 	display: none;
 }
+
 #lossScreen{
-	background-color: gray;
+	background-color: rgb(255, 255, 255);
     text-align: center;
     z-index: 1;
 	width: 800px;
@@ -50,16 +72,14 @@ body{
     right: 0;
 	display: none;
 }
+
 .titleText{
-	font: bold 20px Verdana;
+	font: bold 20px Roboto;
 }
 
 .titleTextBig{
-	font: bold 30px Verdana;
-}
-
-#title{
-	margin-top: 75px;
+	font: bold 80px Roboto;
+	margin-top: 150px;
 }
 
 .button {
