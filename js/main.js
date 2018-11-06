@@ -27,6 +27,12 @@ let winSound = createSound("sounds/little-boops-loop.wav", false); // Sound from
 let loseSound = createSound("sounds/sad-trombone.wav", false); // Sound from: https://freesound.org/people/Timbre/sounds/73750/
 
 function init(){
+	if(localStorage.getItem("shift-level") == null){
+		localStorage.setItem("shift-level", 1);
+	}else{
+		level = localStorage.getItem("shift-level");
+		console.log(level);
+	}
     // Set up the start button to start the game
     document.querySelector("#startButton").onclick = startGame;
     
@@ -45,7 +51,7 @@ function startGame(){
     gameBoard = createArray(rows, cols);
 
     // Start loading the level from an external file and call the levelLoaded function when complete
-    readTextFile("levels/level-1.txt", levelLoaded);
+    readTextFile("levels/level-"+level+".txt", levelLoaded);
 }
 
 function restartGame(){
@@ -281,6 +287,7 @@ function displayWin(){
     // Advance the level
     level = 2;
     
+	localStorage.setItem("shift-level", level);
     // Play the win music
     winSound.play();
     
