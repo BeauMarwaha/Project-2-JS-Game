@@ -1,9 +1,8 @@
 RM1 Project 2 TO DOs:
--8 more levels - James
 -Reverse Piece - James
 -Teleporter Spot - James
 -Documentation - James
--Teleporter Image (Sprite Sheet)
+-Teleporter Image (Sprite Sheet) - (Not required)
 -Documentation - Beau
 
 
@@ -25,3 +24,4 @@ Completed:
 -Custom Font - Beau
 -Add our names - Beau
 -Music/Sound Effects - Beau
+-8 more levels - James
