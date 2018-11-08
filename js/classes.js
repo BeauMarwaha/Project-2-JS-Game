@@ -29,6 +29,10 @@ class circleSprite extends sprite{
 		this.x += x;
 		this.y += y;
 	}
+	place(x,y){
+		this.x = x;
+		this.y = y;
+	}
 }
 
 class squareSprite extends sprite{
@@ -41,7 +45,14 @@ class squareSprite extends sprite{
 	draw(ctx){ 
 		ctx.save();
 		ctx.strokeStyle = this.color;
-		ctx.strokeRect(this.x, this.y, this.width, this.height);
+		ctx.fillStyle = "#b37700";
+		ctx.beginPath();
+		ctx.rect(this.x, this.y, this.width, this.height);
+		ctx.closePath();
+		ctx.stroke();
+		ctx.fill();
+		//ctx.fillStyle = "#b37700";
+		//ctx.fillRect(this.x+3, this.y+3, this.width-6, this.height-6);
 		ctx.restore();
 	}
 }
@@ -68,9 +79,9 @@ function createSquareSprite(x=0, y=0, color="Blue", width=10, height=10){
 	return new squareSprite(x,y,width,height,color); 
 }
 
-function createImageSprite(x, y, width=30, height=30, url="images/Sean.png"){
+function createImageSprite(x, y, width=75, height=75, url="images/portal.png"){
 	let image = new Image();
-	image.src = url; 
+	image.src = url;
 	return new imageSprite(x,y,width,height,image); 
 }
 

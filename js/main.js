@@ -12,6 +12,7 @@ const cols = 8;
 const colWidth = 75;
 let dots = [];
 let endPoints = [];
+let teleporters = [];
 
 let turns = 8;
 let level = 1;
@@ -63,6 +64,7 @@ function restartGame(){
 	gameBoard = createArray(rows, cols);
 	dots = [];
 	endPoints = [];
+	teleporters = [];
 	readTextFile("levels/level-"+level+".txt", levelLoaded);
 }
 
@@ -117,10 +119,15 @@ function update(){
         endPoint.sprite.draw(ctx);
     });
 	
+	teleporters.forEach(function(tel) {
+        tel.sprite.draw(ctx);
+    });
+	
     dots.forEach(function(dot) {
         dot.sprite.draw(ctx);
     });
 
+	
     // Write the turns left onto the screen
 	ctx.font = "bold 30px Roboto";
     ctx.fillText("Turns left: " + turns, 615, 50, 185);
@@ -147,17 +154,28 @@ function initializeLevel(levelGuide)
             else if (levelGuide.charAt(location) == 2) // Tile with ball
             {
                 gameBoard[j][i] = {sprite:createSquareSprite((i * colWidth) + leftSpacing, (j * rowWidth) + topSpacing, "Black", colWidth, rowWidth), filled: 2};
-                dots.push({sprite:createCircleSprite(i, j, "Green", colWidth / 2.5), x: i, y: j});
+                dots.push({sprite:createCircleSprite(i, j, "Green", colWidth / 2.5), x: i, y: j, normal: true});
             }
             else if (levelGuide.charAt(location) == 3) // Tile with end goal
             {
                 gameBoard[j][i] = {sprite:createSquareSprite((i * colWidth) + leftSpacing, (j * rowWidth) + topSpacing, "Black", colWidth, rowWidth), filled: 3};
                 endPoints.push({sprite:createCircleSprite(i, j, "Purple", colWidth / 2.5), x: i, y: j});
             }
+			else if (levelGuide.charAt(location) == "R") // Tile with reverse ball
+            {
+                gameBoard[j][i] = {sprite:createSquareSprite((i * colWidth) + leftSpacing, (j * rowWidth) + topSpacing, "Black", colWidth, rowWidth), filled: 2};
+                dots.push({sprite:createCircleSprite(i, j, "Red", colWidth / 2.5), x: i, y: j, normal: false});
+            }else if(levelGuide.charAt(location) == "T" ) //Tile with teleporter
+			{
+				gameBoard[j][i] = {sprite:createSquareSprite((i * colWidth) + leftSpacing, (j * rowWidth) + topSpacing, "Black", colWidth, rowWidth), filled: 1};
+				teleporters.push({sprite: createImageSprite((i * colWidth) + leftSpacing +5, (j * rowWidth) + topSpacing +5, 65, 65, "images/portal.png"),x:i, y:j}); // Image obtained and edited from https://www.deviantart.com/texelgirl-stock/art/Portal-1-83764812
+			}
             location++;
         }
     }
 	let turnNum = "";
+	//Read the turn number from the level file
+	//Read each character until no character is found
 	while(levelGuide.charAt(location)!= ""){
 		turnNum += "" + levelGuide.charAt(location) + "";
 		location++;
@@ -200,47 +218,77 @@ function readTextFile(file, callback) {
 function keyPressed(event) {
 	let move = 0;
 	if(paused) return;
+	//Left
 	if(event.keyCode == 37) {
 		dots.sort((a,b) => a.x - b.x);
         for(let dot of dots){
-			if(dot.x - 1 >=0 && gameBoard[dot.y][dot.x-1].filled != 0 && gameBoard[dot.y][dot.x-1].filled != 2){
+			//Standard dot movement
+			if(dot.normal && dot.x - 1 >=0 && gameBoard[dot.y][dot.x-1].filled != 0 && gameBoard[dot.y][dot.x-1].filled != 2){
 				gameBoard[dot.y][dot.x-1].filled = 2;
 				gameBoard[dot.y][dot.x].filled = 1;
 				dot.sprite.move(-1,0);
 				dot.x--;
 				move++;
-			}
-		}	
-    }else if(event.keyCode == 38) {
-		dots.sort((a,b) => a.y - b.y);
-    	for(let dot of dots){
-			if(dot.y - 1 >=0 && gameBoard[dot.y-1][dot.x].filled != 0 && gameBoard[dot.y-1][dot.x].filled != 2){
-				gameBoard[dot.y-1][dot.x].filled = 2;
-				gameBoard[dot.y][dot.x].filled = 1;
-				dot.sprite.move(0,-1);
-				dot.y--;
-				move++;
-			}
-		}	
-    }else if(event.keyCode == 39) {
-		dots.sort((a,b) => b.x - a.x);
-        for(let dot of dots){
-			if(dot.x + 1 < 8 && gameBoard[dot.y][dot.x+1].filled != 0 && gameBoard[dot.y][dot.x+1].filled != 2){
+			//Reverse dot movement
+			}else if( !dot.normal && dot.x + 1 < 8 && gameBoard[dot.y][dot.x+1].filled != 0 && gameBoard[dot.y][dot.x+1].filled != 2){
 				gameBoard[dot.y][dot.x+1].filled = 2;
 				gameBoard[dot.y][dot.x].filled = 1;
 				dot.sprite.move(1,0);
 				dot.x++;
 				move++;
 			}
-		}		
-    }else if(event.keyCode == 40) {
-		dots.sort((a,b) => b.y - a.y);
+		}
+	//Up		
+    }else if(event.keyCode == 38) {
+		dots.sort((a,b) => a.y - b.y);
     	for(let dot of dots){
-			if(dot.y + 1 < 8&& gameBoard[dot.y+1][dot.x].filled != 0&& gameBoard[dot.y+1][dot.x].filled != 2){
+			if(dot.normal && dot.y - 1 >=0 && gameBoard[dot.y-1][dot.x].filled != 0 && gameBoard[dot.y-1][dot.x].filled != 2){
+				gameBoard[dot.y-1][dot.x].filled = 2;
+				gameBoard[dot.y][dot.x].filled = 1;
+				dot.sprite.move(0,-1);
+				dot.y--;
+				move++;
+			}else if(!dot.normal && dot.y + 1 < 8&& gameBoard[dot.y+1][dot.x].filled != 0&& gameBoard[dot.y+1][dot.x].filled != 2){
 				gameBoard[dot.y+1][dot.x].filled = 2;
 				gameBoard[dot.y][dot.x].filled = 1;
 				dot.sprite.move(0,1);
 				dot.y++;
+				move++;
+			}
+		}
+	//Right
+    }else if(event.keyCode == 39) {
+		dots.sort((a,b) => b.x - a.x);
+        for(let dot of dots){
+			if(dot.normal && dot.x + 1 < 8 && gameBoard[dot.y][dot.x+1].filled != 0 && gameBoard[dot.y][dot.x+1].filled != 2){
+				gameBoard[dot.y][dot.x+1].filled = 2;
+				gameBoard[dot.y][dot.x].filled = 1;
+				dot.sprite.move(1,0);
+				dot.x++;
+				move++;
+			}else if(!dot.normal && dot.x - 1 >=0 && gameBoard[dot.y][dot.x-1].filled != 0 && gameBoard[dot.y][dot.x-1].filled != 2){
+				gameBoard[dot.y][dot.x-1].filled = 2;
+				gameBoard[dot.y][dot.x].filled = 1;
+				dot.sprite.move(-1,0);
+				dot.x--;
+				move++;
+			}
+		}
+	//Down	
+    }else if(event.keyCode == 40) {
+		dots.sort((a,b) => b.y - a.y);
+    	for(let dot of dots){
+			if(dot.normal && dot.y + 1 < 8&& gameBoard[dot.y+1][dot.x].filled != 0&& gameBoard[dot.y+1][dot.x].filled != 2){
+				gameBoard[dot.y+1][dot.x].filled = 2;
+				gameBoard[dot.y][dot.x].filled = 1;
+				dot.sprite.move(0,1);
+				dot.y++;
+				move++;
+			}else if(!dot.normal && dot.y - 1 >=0 && gameBoard[dot.y-1][dot.x].filled != 0 && gameBoard[dot.y-1][dot.x].filled != 2){
+				gameBoard[dot.y-1][dot.x].filled = 2;
+				gameBoard[dot.y][dot.x].filled = 1;
+				dot.sprite.move(0,-1);
+				dot.y--;
 				move++;
 			}
 		}	
@@ -255,7 +303,13 @@ function keyPressed(event) {
         turns--;
         
         // Reset the move counter
-		move = 0;		
+		move = 0;
+		
+		//Check if teleporters exist in the current level
+		if(teleporters.length > 0){
+			teleport();
+		}
+				
     }
     
     // Check win/loss conditions
@@ -285,8 +339,10 @@ function checkWin(){
 
 function displayWin(){
     // Advance the level
-    level = 2;
-    
+    level++;
+    if(level > 10){
+		level = 10;
+	}
 	localStorage.setItem("shift-level", level);
     // Play the win music
     winSound.play();
@@ -309,5 +365,27 @@ function displayLoss(){
     // Display the loss screen
 	document.querySelector("#retryButton").onclick = restartGame;
 	document.querySelector('#lossScreen').style.display = "block";
+}
+function teleport(){
+	//Go through each dot and check if it is on either teleporter spot
+	for(let dot of dots){
+		//If a dot is on a teleporter swap it to the other teleporter's location
+		if(dot.x == teleporters[0].x && dot.y == teleporters[0].y)
+		{
+			gameBoard[teleporters[1].y][teleporters[1].x].filled = 2;
+			gameBoard[dot.y][dot.x].filled = 1;
+			dot.x = teleporters[1].x;
+			dot.y = teleporters[1].y;
+			dot.sprite.place(teleporters[1].x, teleporters[1].y);
+		}
+		else if(dot.x == teleporters[1].x && dot.y == teleporters[1].y)
+		{
+			gameBoard[teleporters[0].y][teleporters[0].x].filled = 2;
+			gameBoard[dot.y][dot.x].filled = 1;
+			dot.x = teleporters[0].x;
+			dot.y = teleporters[0].y;
+			dot.sprite.place(teleporters[0].x, teleporters[0].y);
+		}
+	}
 }
   
